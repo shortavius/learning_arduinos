@@ -1,4 +1,5 @@
 #include "console.h"
+#include "../cmd_process/cmd_process.h"
 
 #include <string.h>
 
@@ -44,8 +45,10 @@ void console_action(void)
         }
         else if ((uint8_t)0x0D == in_byte)
         {
+            cmd_str[cmd_byte_pos] = (uint8_t)0u;
             CONSOLE_PORT.print("\r\n");
-            CONSOLE_PORT.print((char *)cmd_str);
+            cmd_process_load_cmd(cmd_str, cmd_byte_pos);
+            cmd_process_process_cmd();
             (void)memset(
                 (void *)&cmd_str,
                 0x00,
