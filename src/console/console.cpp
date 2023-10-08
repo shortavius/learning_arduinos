@@ -22,6 +22,11 @@ void console_cfg(void)
     display_prompt();
 }
 
+void console_display_str_nl(const uint8_t * const str)
+{
+    CONSOLE_PORT.println((char *)str);
+}
+
 void console_action(void)
 {
     if (0 < CONSOLE_PORT.available())
