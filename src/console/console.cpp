@@ -5,6 +5,8 @@
 
 #include <Arduino.h>
 
+
+
 #define CONSOLE_PORT                        Serial
 #define CONSOLE_BAUDRATE                    115200
 
@@ -21,6 +23,17 @@ void console_cfg(void)
 {
     CONSOLE_PORT.begin((long)CONSOLE_BAUDRATE);
     display_prompt();
+}
+
+void console_display_ip(IPAddress ip)
+{
+    CONSOLE_PORT.print("IP: ");
+    CONSOLE_PORT.println(ip);
+}
+
+void console_display_str(const uint8_t * const str)
+{
+    CONSOLE_PORT.print((char *)str);
 }
 
 void console_display_str_nl(const uint8_t * const str)

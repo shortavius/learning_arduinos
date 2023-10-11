@@ -1,6 +1,7 @@
 #include "cmd_process.h"
 #include "../console/console.h"
 #include "../ledbar/ledbar.h"
+#include "../netwrk/netwrk.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -15,6 +16,9 @@ static bool cmd_process_do_work;
 
 static void cmd_process_led(char * cmd_idx);
 static void cmd_process_led_mode(char * cmd_idx, int led);
+
+static void cmd_process_network(char * cmd_idx);
+
 static uint8_t skip_spaces(char *idx);
 
 
@@ -57,6 +61,7 @@ void cmd_process_process_cmd(void)
         console_display_str_nl((uint8_t *)"Help menu");
         console_display_str_nl((uint8_t *)"Available commands: ");
         console_display_str_nl((uint8_t *)"led");
+        console_display_str_nl((uint8_t *)"network");
         console_display_str_nl((uint8_t *)"\r\nAdd '?' to end for more help");
         console_display_str_nl((uint8_t *)"i.e: $ led ?");
     }
@@ -65,6 +70,12 @@ void cmd_process_process_cmd(void)
         cmd_idx += strlen("led");
         cmd_idx += skip_spaces(cmd_idx);
         cmd_process_led(cmd_idx);
+    }
+    else if (0 == strncmp(cmd_idx, "network", strlen("network")))
+    {
+        cmd_idx += strlen("network");
+        cmd_idx += skip_spaces(cmd_idx);
+        cmd_process_network(cmd_idx);
     }
     else
     {
@@ -83,7 +94,7 @@ static void cmd_process_led(char * cmd_idx)
         console_display_str_nl(
             (uint8_t *)"  Where:\r\n    <led#> - [0, 1, 2, 3, 4]");
     }
-    if (((char)0x2F < *cmd_idx) && ((char)0x35)> *cmd_idx)
+    else if (((char)0x2F < *cmd_idx) && ((char)0x35)> *cmd_idx)
     {
         char led_num_str[2] = { (char)0x0 };
         led_num_str[0] = *cmd_idx;
@@ -126,6 +137,43 @@ static void cmd_process_led_mode(char * cmd_idx, int led)
     else if (0 == strncmp(cmd_idx, "on", strlen("on")))
     {
         ledbar_set_led_mode(led, LED_COMMAND_ON);
+    }
+    else
+    {
+        console_display_str_nl((uint8_t *)"Syntax error");
+    }
+}
+
+static void cmd_process_network(char * cmd_idx)
+{
+    if ('?' == *cmd_idx)
+    {
+        console_display_str_nl(
+            (uint8_t *)"command format: network <connect|disconnect#>");
+        console_display_str_nl(
+            (uint8_t *)"  Where:");
+        console_display_str_nl(
+            (uint8_t *)"       connect - connect to WiFi network");
+        console_display_str_nl(
+            (uint8_t *)"    disconnect - disconnect from WiFi network");
+    }
+    else if (0 == strncmp(cmd_idx, "connect", strlen("connect")))
+    {
+        bool resp = netwrk_connect();
+        if (!resp)
+        {
+            console_display_str_nl((uint8_t *)"Connect: Failed");
+        }
+        else
+        {
+            console_display_str_nl((uint8_t *)"Connect: Success");
+            IPAddress ip = netwrk_get_ip_addr();
+            console_display_ip(ip);
+        }
+    }
+    else if (0 == strncmp(cmd_idx, "disconnect", strlen("disconnect")))
+    {
+        netwrk_disconnect();
     }
     else
     {

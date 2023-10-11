@@ -3,8 +3,10 @@
 #include "src/button/button.h"
 #include "src/console/console.h"
 #include "src/cmd_process/cmd_process.h"
+#include "src/netwrk/netwrk.h"
 
 #include <Arduino.h>
+#include <WiFiNINA.h>
 
 void setup() {
   hrtbt_cfg();
@@ -12,6 +14,7 @@ void setup() {
   button_switch_cfg();
   console_cfg();
   cmd_process_cfg();
+  netwrk_cfg();
 }
 
 void loop() {
