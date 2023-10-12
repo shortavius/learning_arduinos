@@ -156,6 +156,8 @@ static void cmd_process_network(char * cmd_idx)
             (uint8_t *)"       connect - connect to WiFi network");
         console_display_str_nl(
             (uint8_t *)"    disconnect - disconnect from WiFi network");
+        console_display_str_nl(
+            (uint8_t *)"          ping - send ping to server");
     }
     else if (0 == strncmp(cmd_idx, "connect", strlen("connect")))
     {
@@ -174,6 +176,10 @@ static void cmd_process_network(char * cmd_idx)
     else if (0 == strncmp(cmd_idx, "disconnect", strlen("disconnect")))
     {
         netwrk_disconnect();
+    }
+    else if (0 == strncmp(cmd_idx, "ping", strlen("ping")))
+    {
+        ;
     }
     else
     {
